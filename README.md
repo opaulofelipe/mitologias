@@ -5,7 +5,7 @@ App em Python/Streamlit com 50 categorias e 800 perguntas.
 ## Arquivos
 
 - `app.py` — interface e lógica do quiz
-- `mitologias_completo_50_temas_800_perguntas.json` — banco de perguntas
+- `mitologias_parte_1.json` a `mitologias_parte_5.json` — banco completo, dividido em 5 partes (800 perguntas)
 - `requirements.txt` — dependência do projeto
 
 ## Executar localmente
