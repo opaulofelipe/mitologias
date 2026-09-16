@@ -19,7 +19,7 @@ st.set_page_config(
 )
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_GLOB = "mitologias_parte_*.json"
+DATA_GLOB = "mitologias_completo_50_temas_800_perguntas.json"
 
 PALETTE = {
     "taupe": "#93827F",
