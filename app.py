@@ -19,7 +19,7 @@ st.set_page_config(
 )
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_FILE = BASE_DIR / "mitologias_completo_50_temas_800_perguntas.json"
+DATA_GLOB = "mitologias_parte_*.json"
 
 PALETTE = {
     "taupe": "#93827F",
@@ -217,17 +217,30 @@ st.markdown(
 # -----------------------------------------------------------------------------
 @st.cache_data(show_spinner=False)
 def carregar_banco() -> dict[str, list[dict[str, Any]]]:
-    if not DATA_FILE.exists():
+    arquivos = sorted(BASE_DIR.glob(DATA_GLOB))
+    if not arquivos:
         raise FileNotFoundError(
-            f"Arquivo não encontrado: {DATA_FILE.name}. "
-            "Coloque o JSON na mesma pasta do app.py."
+            "Nenhum arquivo de perguntas foi encontrado. "
+            f"Mantenha os arquivos {DATA_GLOB} na mesma pasta do app.py."
         )
 
-    with DATA_FILE.open("r", encoding="utf-8") as arquivo:
-        banco = json.load(arquivo)
+    banco: dict[str, list[dict[str, Any]]] = {}
+    for caminho in arquivos:
+        with caminho.open("r", encoding="utf-8") as arquivo:
+            bloco = json.load(arquivo)
 
-    if not isinstance(banco, dict) or not banco:
-        raise ValueError("O JSON precisa ter os temas como chaves na raiz.")
+        if not isinstance(bloco, dict):
+            raise ValueError(f"Formato inválido em {caminho.name}.")
+
+        duplicados = set(banco).intersection(bloco)
+        if duplicados:
+            raise ValueError(
+                f"Categorias duplicadas em {caminho.name}: {', '.join(sorted(duplicados))}"
+            )
+        banco.update(bloco)
+
+    if not banco:
+        raise ValueError("O banco de perguntas está vazio.")
 
     return banco
 
